@@ -23,14 +23,14 @@ async function insertUser(usuarios){
 
 async function readUser(usuarios){
   try{
-    if("cd_user" in usuarios || (!usuarios.cd_user)){
+    if(!"cd_user" in usuarios || (!usuarios.cd_user)){
       return("DIGITE O CODIOGO DO USUARIO")
     }
     var resultado
     let sql = 'SELECT * FROM tb_user WHERE cd_user = ?'
     conexao.query(sql,[[usuarios.cd_user]], (err,res,field)=>{
       if(!err){
-        resultado =res
+        resultado =res[0]
         console.log(resultado)
       }
 
