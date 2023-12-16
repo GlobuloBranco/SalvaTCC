@@ -1,3 +1,4 @@
+import { error } from "console"
 import mysql from "mysql"
 var conexao = mysql.createConnection({
     host: "localhost",
@@ -38,23 +39,27 @@ export async function updateUser(usuarios){
   try{
       var pk 
     if("cd_user" in usuarios && (usuarios.cd_user)){
-      pk = usuarios.cd_user
+      pk = ` WHERE ${usuarios.cd_user}`
       delete usuarios.cd_user
     }
     
     else{
       return("DIGITE O CODIGO DO CLIENTE")      
     }
-    let colunas = 
+    let sql =`UPDATE tb_user SET ` 
+    let valores = []
     for(var key in usuarios){
-
+      sql+= key + " = ?,"
+      valores.push(usuarios[key])
     }
-
+    sql.slice(0,-2)
+    sql += pk
     
-    let sql =`UPDATE tb_user SET ${colunas} WHERE ${pk}`
     
     conexao.connect()
-    await conexao.query(sql)
+    await conexao.query(sql,valores,()=>{
+      if (error) throw error
+    })
     conexao.end();
     return(mensagem)
   }
