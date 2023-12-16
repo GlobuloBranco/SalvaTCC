@@ -9,18 +9,18 @@ import conexao from "./conexao.js"
 
 async function insertUser(usuarios){
   try{
-    console.log("backfazendo")
-    let colunas = 'tb_user (nm_user, cpf_user, cidade_user, email_user, senha_user, sexo_user)',mensagem= "Sucesso"
+    console.log(usuarios)
+    let colunas = 'tb_user (nm_user, cpf_user, cidade_user, email_user, senha_user, sexo_user)'
     let insercao = [[usuarios.nm_user,usuarios.cpf_user,usuarios.cidade_user,usuarios.email_user,usuarios.senha_user,usuarios.sexo_user]]
     console.log(insercao)
     
     await conexao.query(`INSERT INTO ${colunas} VALUES ?`,[insercao])
-    return(mensagem)
+    return("Sucesso")
   }
   
   catch(error){
-    mensagem = error
-  return(mensagem)
+   
+  return(error)
   }
 }
 

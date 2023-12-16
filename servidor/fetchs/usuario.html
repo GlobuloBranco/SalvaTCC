@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios</title>
+</head>
+<body>
+
+    <h2>Nome</h2>
+    <input id="nome" type="text"></input>
+    <h2>cpf</h2>
+    <input id="cpf" type="text"></input>
+    <h2>Senha</h2>
+    <input id="senha" type="text"></input>
+    <h2>cidade</h2>
+    <input id="cidade" type="text"></input>
+    <h2>email</h2>
+    <input id="email" type="text"></input>
+    <h2>sexo</h2>
+    <input id="sexo" type="text"></input>
+    <button onclick="frontCadastra()">CADASTRAS</button>
+
+    <script>
+    function getID(){
+        const nome = document.querySelector("#nome").value
+        const senha = document.querySelector("#senha").value
+        const email = document.querySelector("#email").value
+        const cpf = document.querySelector("#cpf").value
+        const sexo = document.querySelector("#sexo").value
+        const cidade = document.querySelector("#cidade").value
+    return({
+        nm_user:nome ,
+        senha_user:senha, 
+        email_user:email,
+        cpf_user:cpf, 
+        sexo_user:sexo,
+        cidade_user:cidade 
+    })
+    }
+    async function frontCadastra(){
+        console.log(getID())
+        const resultado = await fetch("http://localhost:3000/cadastro/usuario" ,{
+            method:"POST",
+            mode:"cors",
+            headers:{ 
+                "Content-Type": "application/json"
+                },
+            body:JSON.stringify(await getID()) 
+        })
+        .then(resultado => resultado.json())
+        .then(print => console.log(print))
+    
+    }
+    </script>
+</body>
+
+</html>
