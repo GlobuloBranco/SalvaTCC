@@ -47,15 +47,18 @@ async function readUser(usuarios){
 
 async function readAllUser(usuarios){
   try{
-    if("cd_user" in usuarios || (!usuarios.cd_user)){
-      return("DIGITE O CODIOGO DO USUARIO")
-    }
+    
     //coluans não possui: senha,pk e cpf
-    let colunas = 'nm_user, cidade_user, email_user, sexo_user)',mensagem= "Sucesso"    
+    let colunas = 'nm_user, cidade_user, email_user, sexo_user',resultado    
     let sql = `SELECT ${colunas} FROM tb_user`
-
-    await conexao.query(sql)
-    return(mensagem)
+     
+    await conexao.query(sql,(err,res)=>{
+      if(!err){
+        resultado = res
+        console.log(resultado)
+      }
+    })
+    return(resultado)
   }
   
   catch(error){

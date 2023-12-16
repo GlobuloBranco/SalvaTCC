@@ -13,7 +13,7 @@ rota.post("/encontrar/usuario",async (req,res) =>{
 }) 
 
 rota.post("/encontrar/todos/usuario",async (req,res) =>{
-    res.send({message:back.readUser(req.body).catch((error)=>{return(`${error}`)})})
+    res.send({message:back.readAllUser(req.body).catch((error)=>{return(`${error}`)})})
 }) 
 
 rota.put("/atualizar/usuario",async (req,res) =>{
