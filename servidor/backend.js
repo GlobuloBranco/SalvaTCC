@@ -1,4 +1,7 @@
 import conexao from "./conexao.js"
+
+
+
 // conexao.query('INSERT INTO [TABLE_NAME](NOMES DOS CAMPOS) VALUES(VALOREEEES) ')
 // conexao.query('UPDATE [TABLE_NAME] SET [VARIAVEL = VALOR, VARIAVEL = VALOR] WHERE[condicao]')
 // conexao.query('SELECT [COLUNA] FROM [TABLE_NAME] ')
@@ -45,7 +48,7 @@ async function readUser(usuarios){
   }
 }
 
-async function readAllUser(usuarios){
+async function readAllUser(){
   try{
     
     //coluans não possui: senha,pk e cpf
@@ -72,7 +75,7 @@ async function updateUser(usuarios){
   try{
       var pk 
     if("cd_user" in usuarios && (usuarios.cd_user)){
-      pk = ` WHERE ${usuarios.cd_user}`
+      pk = ` WHERE cd_user = '${usuarios.cd_user}'`
       delete usuarios.cd_user
     }
     
@@ -85,7 +88,7 @@ async function updateUser(usuarios){
       sql+= key + " = ?, "
       valores.push(usuarios[key])
     }
-    sql.slice(0,-2)
+    sql = sql.slice(0,-2)
     sql += pk
     
     
