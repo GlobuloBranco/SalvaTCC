@@ -1,12 +1,4 @@
-
-import mysql from "mysql"
-var conexao = mysql.createConnection({
-    host: "localhost",
-    user:"root",
-    password:"root",
-    database: "adopet"
-})
-
+import conexao from "./conexao.js"
 // conexao.query('INSERT INTO [TABLE_NAME](NOMES DOS CAMPOS) VALUES(VALOREEEES) ')
 // conexao.query('UPDATE [TABLE_NAME] SET [VARIAVEL = VALOR, VARIAVEL = VALOR] WHERE[condicao]')
 // conexao.query('SELECT [COLUNA] FROM [TABLE_NAME] ')
@@ -14,22 +6,17 @@ var conexao = mysql.createConnection({
 
 async function insertUser(usuarios){
   try{
+    console.log("backfazendo")
     let colunas = 'tb_user (nm_user, cpf_user, cidade_user, email_user, senha_user, sexo_user)',mensagem= "Sucesso"
-    let insercao = `${usuarios.nm_user},${usuarios.cpf_user},${usuarios.cidade_user},${usuarios.email_user},${usuarios.senha_user},${usuarios.sexo_user}`
-    console.log(conexao)
+    let insercao = [[usuarios.nm_user,usuarios.cpf_user,usuarios.cidade_user,usuarios.email_user,usuarios.senha_user,usuarios.sexo_user]]
+    console.log(insercao)
     
-    conexao.connect()
-    console.log(conexao)
-    await conexao.query(`INSERT INTO ${colunas} VALUES(${insercao})`)
-    conexao.end();
+    await conexao.query(`INSERT INTO ${colunas} VALUES ?`,[insercao])
     return(mensagem)
   }
   
   catch(error){
     mensagem = error
-    if(conexao){
-      await conexao.end();
-    }
   return(mensagem)
   }
 }
@@ -39,21 +26,40 @@ async function readUser(usuarios){
     if("cd_user" in usuarios || (!usuarios.cd_user)){
       return("DIGITE O CODIOGO DO USUARIO")
     }
-
-    let mensagem= "Sucesso"    
+    var resultado
     let sql = 'SELECT * FROM tb_user WHERE cd_user = ?'
+    conexao.query(sql,[[usuarios.cd_user]], (err,res,field)=>{
+      if(!err){
+        resultado =res
+        console.log(resultado)
+      }
 
-    conexao.connect()
-    await conexao.query(sql,[usuarios.cd_user])
-    conexao.end();
+    })
+    
+    return(resultado)
+  }
+  
+  catch(error){
+    mensagem = error
+  return(mensagem)
+  }
+}
+
+async function readAllUser(usuarios){
+  try{
+    if("cd_user" in usuarios || (!usuarios.cd_user)){
+      return("DIGITE O CODIOGO DO USUARIO")
+    }
+    //coluans não possui: senha,pk e cpf
+    let colunas = 'nm_user, cidade_user, email_user, sexo_user)',mensagem= "Sucesso"    
+    let sql = `SELECT ${colunas} FROM tb_user`
+
+    await conexao.query(sql)
     return(mensagem)
   }
   
   catch(error){
     mensagem = error
-    if(conexao){
-      await conexao.end();
-    }
   return(mensagem)
   }
 }
@@ -80,17 +86,12 @@ async function updateUser(usuarios){
     sql += pk
     
     
-    conexao.connect()
     await conexao.query(sql,valores)
-    conexao.end();
     return(mensagem)
   }
   
   catch(error){
     mensagem = error
-    if(conexao){
-      await conexao.end();
-    }
   return(mensagem)
   }
 }
@@ -99,9 +100,7 @@ async function deleteUser(usuarios){
   try{
     if ("cd_user" in usuarios && (usuarios.cd_user)){
       let sql = 'DELETE FROM tb_user WHERE cd_user = ? '
-      conexao.connect()
-      conexao.query(sql,[usuarios.cd_user])
-      conexao.end()
+      conexao.query(sql,[[usuarios.cd_user]])
       return("Deletado")
     }
 
@@ -112,9 +111,6 @@ async function deleteUser(usuarios){
 
   catch(error){
     mensagem = error
-    if(conexao){
-      await conexao.end(); 
-    }
   }
 }
 
@@ -123,6 +119,7 @@ export default {
           //crud usuario
           insertUser,
           readUser,
+          readAllUser,
           updateUser,
           deleteUser,
           //crud 
