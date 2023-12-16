@@ -1,4 +1,4 @@
-import { error } from "console"
+
 import mysql from "mysql"
 var conexao = mysql.createConnection({
     host: "localhost",
@@ -34,6 +34,30 @@ export async function insertUser(usuarios){
   }
 }
 
+export async function readUser(usuarios){
+  try{
+    if("cd_user" in usuarios || (!usuarios.cd_user)){
+      return("DIGITE O CODIOGO DO USUARIO")
+    }
+
+    let mensagem= "Sucesso"    
+    let sql = 'SELECT * FROM tb_user WHERE ?'
+
+    conexao.connect()
+    await conexao.query(sql,[usuarios.cd_user])
+    conexao.end();
+    return(mensagem)
+  }
+  
+  catch(error){
+    mensagem = error
+    if(conexao){
+      await conexao.end();
+    }
+  return(mensagem)
+  }
+}
+
 
 export async function updateUser(usuarios){
   try{
@@ -49,7 +73,7 @@ export async function updateUser(usuarios){
     let sql =`UPDATE tb_user SET ` 
     let valores = []
     for(var key in usuarios){
-      sql+= key + " = ?,"
+      sql+= key + " = ?, "
       valores.push(usuarios[key])
     }
     sql.slice(0,-2)
@@ -57,9 +81,7 @@ export async function updateUser(usuarios){
     
     
     conexao.connect()
-    await conexao.query(sql,valores,()=>{
-      if (error) throw error
-    })
+    await conexao.query(sql,valores)
     conexao.end();
     return(mensagem)
   }
@@ -73,3 +95,27 @@ export async function updateUser(usuarios){
   }
 }
 
+export async function deleteUser(usuarios){
+  try{
+    if ("cd_user" in usuarios && (usuarios.cd_user)){
+      let sql = 'DELETE FROM tb_user WHERE ? '
+      conexao.connect()
+      conexao.query(sql,[usuarios.cd_user])
+      conexao.end()
+      return("Deletado")
+    }
+
+    else{
+      return("")
+    }
+  }
+  catch(error){
+    mensagem = error
+    if(conexao){
+      await conexao.end(); 
+  }
+// conexao.query()
+// conexao.query('DELETE FROM [TABLE_NAME] WHERE[Condicao] ')
+
+}
+}
