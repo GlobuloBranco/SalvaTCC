@@ -12,7 +12,7 @@ var conexao = mysql.createConnection({
 // conexao.query('SELECT [COLUNA] FROM [TABLE_NAME] ')
 // conexao.query('DELETE FROM [TABLE_NAME] WHERE[Condicao] ')
 
-export async function insertUser(usuarios){
+async function insertUser(usuarios){
   try{
     let colunas = 'tb_user (nm_user, cpf_user, cidade_user, email_user, senha_user, sexo_user)',mensagem= "Sucesso"
     let insercao = `${usuarios.nm_user},${usuarios.cpf_user},${usuarios.cidade_user},${usuarios.email_user},${usuarios.senha_user},${usuarios.sexo_user}`
@@ -20,7 +20,7 @@ export async function insertUser(usuarios){
     
     conexao.connect()
     console.log(conexao)
-    await conexao.query(`INSERT INTO ${campos} VALUES(${insercao})`)
+    await conexao.query(`INSERT INTO ${colunas} VALUES(${insercao})`)
     conexao.end();
     return(mensagem)
   }
@@ -34,14 +34,14 @@ export async function insertUser(usuarios){
   }
 }
 
-export async function readUser(usuarios){
+async function readUser(usuarios){
   try{
     if("cd_user" in usuarios || (!usuarios.cd_user)){
       return("DIGITE O CODIOGO DO USUARIO")
     }
 
     let mensagem= "Sucesso"    
-    let sql = 'SELECT * FROM tb_user WHERE ?'
+    let sql = 'SELECT * FROM tb_user WHERE cd_user = ?'
 
     conexao.connect()
     await conexao.query(sql,[usuarios.cd_user])
@@ -59,7 +59,7 @@ export async function readUser(usuarios){
 }
 
 
-export async function updateUser(usuarios){
+async function updateUser(usuarios){
   try{
       var pk 
     if("cd_user" in usuarios && (usuarios.cd_user)){
@@ -95,10 +95,10 @@ export async function updateUser(usuarios){
   }
 }
 
-export async function deleteUser(usuarios){
+async function deleteUser(usuarios){
   try{
     if ("cd_user" in usuarios && (usuarios.cd_user)){
-      let sql = 'DELETE FROM tb_user WHERE ? '
+      let sql = 'DELETE FROM tb_user WHERE cd_user = ? '
       conexao.connect()
       conexao.query(sql,[usuarios.cd_user])
       conexao.end()
@@ -106,16 +106,24 @@ export async function deleteUser(usuarios){
     }
 
     else{
-      return("")
+      return("DIGITE O CODIGO DO USUARIO")
     }
   }
+
   catch(error){
     mensagem = error
     if(conexao){
       await conexao.end(); 
+    }
   }
-// conexao.query()
-// conexao.query('DELETE FROM [TABLE_NAME] WHERE[Condicao] ')
+}
 
-}
-}
+
+export default {
+          //crud usuario
+          insertUser,
+          readUser,
+          updateUser,
+          deleteUser,
+          //crud 
+             }
