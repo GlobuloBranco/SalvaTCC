@@ -20,7 +20,7 @@ rota.put("/atualizar/usuario",async (req,res) =>{
     res.send({message:back.updateUser(req.body).catch((error)=>{return(`${error}`)})})
 })
 
-rota.post("/delete/usuario",async (req,res) =>{
+rota.delete("/delete/usuario",async (req,res) =>{
     res.send({message:back.deleteUser(req.body).catch((error)=>{return(`${error}`)})})
 }) 
 //////////FIM USUARIOS
