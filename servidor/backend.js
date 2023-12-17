@@ -59,6 +59,21 @@ async function readTutor(tutor){
   }
 }
 
+// Login do usuário
+const loginUser = (req, res) => {
+  const { email, password } = req.body;
+  const sql = "SELECT * FROM TB_USER WHERE EMAIL_USER = ? AND SENHA_USER = ?";
+  conexao.query(sql, [email, password], ((err, result) => {
+    if (err) throw err;
+    console.log(result);
+    if (result.length < 1) {
+      res.status(400).json({ msg: "Email ou senha inválidos" });
+      return;
+    }
+    res.status(200).json({ msg: "Sucesso", id_user: result[0].ID_USER });
+  }))
+}
+
 async function readAllTutor(tutor){
   try{
       
@@ -168,7 +183,7 @@ async function readUser(usuarios){
     }
   
     var resultado
-    let sql = 'SELECT * FROM tb_user WHERE cd_user = ? ;'
+    let sql = 'SELECT * FROM tb_user WHERE id_user = ? ;'
   
     const resposta = new Promise((resolve,rejects)=>{
       conexao.query(sql,[[usuarios.cd_user]], (err,res,field)=>{
@@ -272,11 +287,12 @@ async function deleteUser(usuarios){
 
 // Função para registrar um pet
 const registrarPet = (req, res) => {
-
   // Pega os valores do front
   const {id_user, name_pet, gender, raca, porte, castrado, image} = req.body
-  const sql = "INSERT INTO TB_PET (ID_USER, NM_PET, SEXO, RACA, PORTE, CASTRADO, IMG_PET) VALUES ?"
-  const values = [[id_user, name_pet, gender, raca, porte, castrado, image]]
+  const date = new Date()
+  const date_pub = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
+  const sql = "INSERT INTO TB_PET (ID_USER, NM_PET, SEXO, RACA, PORTE, CASTRADO, DATE_PUB, IMG_PET) VALUES ?"
+  const values = [[id_user, name_pet, gender, raca, porte, castrado, date_pub, image]]
   conexao.query(sql, [values], (err) => {
     if (err) throw err;
     res.status(200).json("Pet inserido")
@@ -299,6 +315,18 @@ const viewUserPets = (req, res) => {
   })
 }
 
+
+// Função para visualizar um pet específico
+const viewPet = (req, res) => {
+  // Pega o id do usuário pel link /pet/petsUsuarios/1 por exemplo
+  const { idPet } = req.params
+  const sql = "SELECT TB_PET.*, TB_USER.NM_USER FROM TB_PET JOIN TB_USER ON TB_PET.ID_USER = TB_USER.ID_USER WHERE TB_PET.CD_PET = ?"
+  conexao.query(sql, idPet, (err, result) => {
+    if (err) throw err
+    res.status(200).json(result)
+  })
+}
+
 async function readAllPet(){
   try{
     
@@ -308,8 +336,7 @@ async function readAllPet(){
     const resposta = new Promise((resolve, reject)=>{
      conexao.query(sql,(err,res)=>{
       if(!err){
-        resultado = res
-        resolve(resultado)
+        resolve(res)
       }
     })
   })
@@ -381,6 +408,7 @@ export default {
           readUser,
           readAllUser,
           updateUser,
+          loginUser,
           deleteUser,
           //fim crud usuarios
 
@@ -389,6 +417,7 @@ export default {
           viewUserPets,
           readAllPet,
           updatePets,
+          viewPet,
           deletePets,
           //fim crud pets
           

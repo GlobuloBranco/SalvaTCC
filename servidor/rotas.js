@@ -27,11 +27,17 @@ rota.post("/pet/registrar", back.registrarPet)
 // O /:id_user é pego do front para buscar o id do usuário logado
 rota.get("/pet/petsUsuario/:id_user", back.viewUserPets)
 
+rota.get("/pet/viewPet/:idPet", back.viewPet)
+
 rota.put("/pet/atualiza",async (req,res) =>{
     res.send({message:await back.updatePets(req.body).catch((error)=>{return(error)})})})
 
 rota.delete("/pet/delete",async (req,res) =>{
     res.send({message:await back.deletePets(req.body).catch((error)=>{return(error)})})})
+
+rota.get("/encontrar/pets",async (req,res) =>{
+    res.send({message: await back.readAllPet(req.body).catch((error)=>{return(`${error}`)})})
+})
 //////////FIM PETS
 
 
@@ -45,10 +51,11 @@ rota.post("/encontrar/usuario",async (req,res) =>{
     res.send(await back.readUser(req.body).catch((error)=>{return(`${error}`)}))
 })
 
+rota.post("/login/user", back.loginUser)
 
 rota.get("/encontrar/todos/usuario",async (req,res) =>{
     res.send({message: await back.readAllUser(req.body).catch((error)=>{return(`${error}`)})})
-}) 
+})
 
 rota.put("/atualizar/usuario",async (req,res) =>{
     res.send({message: await back.updateUser(req.body).catch((error)=>{return(`${error}`)})})
