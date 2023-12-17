@@ -25,6 +25,7 @@
     <button onclick="frontLer()">encontra usuario</button>
     <button onclick="frontLerTUDO()">TODOS OS USUARIOS</button>
     <button onclick="frontDeleta()">DELETA</button>
+    <button onclick="frontAtualiza()">ATUALIZA</button>
 
     <script>
     function getID(){
@@ -93,6 +94,22 @@
                 "Content-Type": "application/json"
                 },
                 body:JSON.stringify({cd_user:document.querySelector("#codigo").value})
+        })
+        .then(resultado => resultado.json())
+        .then(print => console.log(print))
+    
+    }
+    
+    async function frontAtualiza(){
+        let campos = await getID()
+        campos["cd_user"] = document.querySelector("#codigo").value
+        const resultado = await fetch("http://localhost:3000/atualizar/usuario" ,{
+            method:"PUT",
+            mode:"cors",
+            headers:{ 
+                "Content-Type": "application/json"
+                },
+                body:JSON.stringify(campos)
         })
         .then(resultado => resultado.json())
         .then(print => console.log(print))

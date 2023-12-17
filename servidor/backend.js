@@ -80,7 +80,17 @@ async function readAllUser(){
 
 async function updateUser(usuarios){
   try{
-      var pk 
+    //achar todos os prenchidos e adicionar eles no array
+    let prenchidos = {}
+    let campos = Object.keys(usuarios)
+    for(let i =0; Object.keys(usuarios).length>i;i++){
+      if(usuarios[campos[i]])
+        prenchidos[campos[i]] = usuarios[campos[i]]
+    }
+    usuarios = prenchidos
+
+
+     var pk 
     if("cd_user" in usuarios && (usuarios.cd_user)){
       pk = ` WHERE cd_user = '${usuarios.cd_user}'`
       delete usuarios.cd_user
@@ -99,8 +109,8 @@ async function updateUser(usuarios){
     sql += pk
     
     
-    await conexao.query(sql,valores)
-    return(mensagem)
+   conexao.query(sql,valores)
+    return("Sucesso")
   }
   
   catch(error){
