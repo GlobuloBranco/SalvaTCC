@@ -60,13 +60,15 @@ async function readAllUser(){
     let colunas = 'nm_user, cidade_user, email_user, sexo_user',resultado    
     let sql = `SELECT ${colunas} FROM tb_user`
      
-    await conexao.query(sql,(err,res)=>{
+    const resposta = new Promise((resolve, reject)=>{
+     conexao.query(sql,(err,res)=>{
       if(!err){
         resultado = res
-        console.log(resultado)
+        resolve(resultado)
       }
     })
-    return(resultado)
+  })
+    return(await resposta)
   }
   
   catch(error){
@@ -122,6 +124,7 @@ async function deleteUser(usuarios){
 
   catch(error){
     mensagem = error
+    return(mensagem)
   }
 }
 //////////////////PET

@@ -23,6 +23,8 @@
     <input id="codigo" type="text"></input>
     <button onclick="frontCadastra()">CADASTRAS</button>
     <button onclick="frontLer()">encontra usuario</button>
+    <button onclick="frontLerTUDO()">TODOS OS USUARIOS</button>
+    <button onclick="frontDeleta()">DELETA</button>
 
     <script>
     function getID(){
@@ -64,6 +66,33 @@
                 "Content-Type": "application/json"
                 },
             body:JSON.stringify({cd_user:document.querySelector("#codigo").value}) 
+        })
+        .then(resultado => resultado.json())
+        .then(print => console.log(print))
+    
+    }
+
+    async function frontLerTUDO(){
+        const resultado = await fetch("http://localhost:3000/encontrar/todos/usuario" ,{
+            method:"GET",
+            mode:"cors",
+            headers:{ 
+                "Content-Type": "application/json"
+                },
+        })
+        .then(resultado => resultado.json())
+        .then(print => console.log(print))
+    
+    }
+
+       async function frontDeleta(){
+        const resultado = await fetch("http://localhost:3000/delete/usuario" ,{
+            method:"DELETE",
+            mode:"cors",
+            headers:{ 
+                "Content-Type": "application/json"
+                },
+                body:JSON.stringify({cd_user:document.querySelector("#codigo").value})
         })
         .then(resultado => resultado.json())
         .then(print => console.log(print))
