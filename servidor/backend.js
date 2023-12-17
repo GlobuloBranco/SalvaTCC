@@ -2,11 +2,17 @@ import { rejects } from "assert"
 import conexao from "./conexao.js"
 
 
-
-// conexao.query('INSERT INTO [TABLE_NAME](NOMES DOS CAMPOS) VALUES(VALOREEEES) ')
-// conexao.query('UPDATE [TABLE_NAME] SET [VARIAVEL = VALOR, VARIAVEL = VALOR] WHERE[condicao]')
-// conexao.query('SELECT [COLUNA] FROM [TABLE_NAME] ')
-// conexao.query('DELETE FROM [TABLE_NAME] WHERE[Condicao] ')
+///////////funcoes auxiliares
+function verificaCampos(obj){
+ let prenchidos = {}
+    let campos = Object.keys(obj)
+    for(let i =0; Object.keys(obj).length>i;i++){
+      if(obj[campos[i]])
+        prenchidos[campos[i]] = obj[campos[i]]
+    }
+    return(prenchidos)
+}
+///////////fim funcoes auxiliares
 
 async function insertUser(usuarios){
   try{
@@ -80,15 +86,8 @@ async function readAllUser(){
 
 async function updateUser(usuarios){
   try{
-    //achar todos os prenchidos e adicionar eles no array
-    let prenchidos = {}
-    let campos = Object.keys(usuarios)
-    for(let i =0; Object.keys(usuarios).length>i;i++){
-      if(usuarios[campos[i]])
-        prenchidos[campos[i]] = usuarios[campos[i]]
-    }
-    usuarios = prenchidos
-
+    //valida os campos que não foram preenchidos
+    usuarios = verificaCampos(usuarios)
 
      var pk 
     if("cd_user" in usuarios && (usuarios.cd_user)){
@@ -167,6 +166,58 @@ const viewUserPets = (req, res) => {
     res.status(200).json(result)
   })
 }
+
+//atualiz pets
+async function updatePets(pets){
+  try{
+    //valida os campos que não foram preenchidos
+    pets = verificaCampos(pets)
+
+    var pk 
+    if("cd_pet" in pets && (pets.cd_pet)){
+      pk = ` WHERE cd_pet = ${pets.cd_pet}`
+      delete pets.cd_pet
+    }
+    
+    else{
+      return("DIGITE O CODIGO DO ANIMAL")      
+    }
+    let sql =`UPDATE tb_pet SET ` 
+    let valores = []
+    for(var key in pets){
+      sql+= key + " = ?, "
+      valores.push(pets[key])
+    }
+    sql = sql.slice(0,-2)
+    sql += pk
+    
+    
+   conexao.query(sql,valores)
+    return("Sucesso")
+  }
+  
+  catch(error){
+    mensagem = error
+  return(mensagem)
+  }
+}
+
+async function deletePets(pets){
+  try{
+    if ("cd_pet" in pets && (pets.cd_pet)){
+      let sql = 'DELETE FROM tb_pet WHERE cd_pet = ? '
+      conexao.query(sql,[[pets.cd_pet]])
+      return("Deletado")
+    }
+
+    else{
+      return("DIGITE O CODIGO DO ANIMAL")
+    }
+  }
+  catch(error){
+    return(error)
+  }
+}
 //////////////////FIM PET
 
 export default {
@@ -176,7 +227,12 @@ export default {
           readAllUser,
           updateUser,
           deleteUser,
+          //fim crud usuarios
+
+          //crud pets
           registrarPet,
-          viewUserPets
-          //crud 
+          viewUserPets,
+          updatePets,
+          deletePets
+          //fim crud pets
              }
