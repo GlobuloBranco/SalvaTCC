@@ -19,7 +19,10 @@
     <input id="email" type="text"></input>
     <h2>sexo</h2>
     <input id="sexo" type="text"></input>
+    <h2>codigo</h2>
+    <input id="codigo" type="text"></input>
     <button onclick="frontCadastra()">CADASTRAS</button>
+    <button onclick="frontLer()">encontra usuario</button>
 
     <script>
     function getID(){
@@ -47,6 +50,20 @@
                 "Content-Type": "application/json"
                 },
             body:JSON.stringify(await getID()) 
+        })
+        .then(resultado => resultado.json())
+        .then(print => console.log(print))
+    
+    }
+
+    async function frontLer(){
+        const resultado = await fetch("http://localhost:3000/encontrar/usuario" ,{
+            method:"POST",
+            mode:"cors",
+            headers:{ 
+                "Content-Type": "application/json"
+                },
+            body:JSON.stringify({cd_user:document.querySelector("#codigo").value}) 
         })
         .then(resultado => resultado.json())
         .then(print => console.log(print))

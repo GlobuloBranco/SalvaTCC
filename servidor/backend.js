@@ -1,3 +1,4 @@
+import { rejects } from "assert"
 import conexao from "./conexao.js"
 
 
@@ -30,19 +31,22 @@ async function readUser(usuarios){
     if(!"cd_user" in usuarios || (!usuarios.cd_user)){
       return("DIGITE O CODIOGO DO USUARIO")
     }
+  
     var resultado
-    let sql = 'SELECT * FROM tb_user WHERE cd_user = ?'
-    conexao.query(sql,[[usuarios.cd_user]], (err,res,field)=>{
+    let sql = 'SELECT * FROM tb_user WHERE cd_user = ? ;'
+  
+    const resposta = new Promise((resolve,rejects)=>{
+      conexao.query(sql,[[usuarios.cd_user]], (err,res,field)=>{
       if(!err){
         resultado =res[0]
-        return(resultado)
+        resolve(resultado)
       }
-
-    })
-    
-    return(resultado)
-  }
+     })
+  })
+ 
+    return(await resposta)
   
+  }
   catch(error){
     mensagem = error
   return(mensagem)
@@ -120,7 +124,7 @@ async function deleteUser(usuarios){
     mensagem = error
   }
 }
-
+//////////////////PET
 
 // Função para registrar um pet
 const registrarPet = (req, res) => {
@@ -150,7 +154,7 @@ const viewUserPets = (req, res) => {
     res.status(200).json(result)
   })
 }
-
+//////////////////FIM PET
 
 export default {
           //crud usuario
