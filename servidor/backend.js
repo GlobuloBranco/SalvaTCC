@@ -288,11 +288,11 @@ async function deleteUser(usuarios){
 // Função para registrar um pet
 const registrarPet = (req, res) => {
   // Pega os valores do front
-  const {id_user, name_pet, gender, raca, porte, castrado, image} = req.body
+  const {id_user, name_pet, tipo, gender, raca, porte, castrado, image} = req.body
   const date = new Date()
   const date_pub = date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear()
-  const sql = "INSERT INTO TB_PET (ID_USER, NM_PET, SEXO, RACA, PORTE, CASTRADO, DATE_PUB, IMG_PET) VALUES ?"
-  const values = [[id_user, name_pet, gender, raca, porte, castrado, date_pub, image]]
+  const sql = "INSERT INTO TB_PET (ID_USER, NM_PET, TIPO, SEXO, RACA, PORTE, CASTRADO, DATE_PUB, IMG_PET) VALUES ?"
+  const values = [[id_user, name_pet, tipo, gender, raca, porte, castrado, date_pub, image]]
   conexao.query(sql, [values], (err) => {
     if (err) throw err;
     res.status(200).json("Pet inserido")

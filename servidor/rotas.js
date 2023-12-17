@@ -32,8 +32,8 @@ rota.get("/pet/viewPet/:idPet", back.viewPet)
 rota.put("/pet/atualiza",async (req,res) =>{
     res.send({message:await back.updatePets(req.body).catch((error)=>{return(error)})})})
 
-rota.delete("/pet/delete",async (req,res) =>{
-    res.send({message:await back.deletePets(req.body).catch((error)=>{return(error)})})})
+rota.delete("/pet/delete/:cd_pet",async (req,res) =>{
+    res.send({message:await back.deletePets(req.params).catch((error)=>{return(error)})})})
 
 rota.get("/encontrar/pets",async (req,res) =>{
     res.send({message: await back.readAllPet(req.body).catch((error)=>{return(`${error}`)})})
