@@ -12,8 +12,137 @@ function verificaCampos(obj){
     }
     return(prenchidos)
 }
-///////////fim funcoes auxiliares
+///////////////////fim funcoes auxiliares
 
+//////////////////TUTOR
+async function insertTutor(tutor){
+try{
+    let colunas = 'tb_tutor (nm_instituicao, cnpj_tutor, cidade_tutor, num_tutor, senha_tutor, email_tutor)'
+    let insercao = [[tutor.nm_tutor,tutor.cnpj_tutor,tutor.cidade_tutor,tutor.num_tutor,tutor.senha_tutor,tutor.email_tutor]]
+    
+    await conexao.query(`INSERT INTO ${colunas} VALUES ?`,[insercao])
+    return("Sucesso")
+  }
+  catch(error){
+  return(error)
+  }
+}
+
+async function readTutor(tutor){
+  try{
+    if(!"cd_tutor" in tutor || (!tutor.cd_tutor)){
+      return("DIGITE O CODIOGO DO USUARIO")
+    }
+  
+    var resultado
+    let sql = 'SELECT * FROM tb_tutor WHERE cd_tutor = ? ;'
+  
+    const resposta = new Promise((resolve,rejects)=>{
+      conexao.query(sql,[[tutor.cd_tutor]], (err,res,field)=>{
+      if(!err){
+        resultado =res[0]
+        resolve(resultado)
+      }
+      else{
+        throw new err
+        
+        }
+     })
+  })
+ 
+    return(await resposta)
+  
+  }
+  catch(error){
+    mensagem = error
+  return(mensagem)
+  }
+}
+
+async function readAllTutor(tutor){
+  try{
+      
+    var resultado
+    let sql = 'SELECT * FROM tb_tutor ;'
+  
+    const resposta = new Promise((resolve,rejects)=>{
+      conexao.query(sql,[[tutor.cd_tutor]], (err,res,field)=>{
+      if(!err){
+        resultado =res
+        resolve(resultado)
+      }
+      else{
+        throw new err
+        
+        }
+     })
+  })
+ 
+    return(await resposta)
+  
+  }
+  catch(error){
+    mensagem = error
+  return(mensagem)
+  }
+}
+
+async function updateTutor(tutor){
+  try{
+    //valida os campos que não foram preenchidos
+    tutor = verificaCampos(tutor)
+
+     var pk 
+    if("cd_tutor" in tutor && (tutor.cd_tutor)){
+      pk = ` WHERE cd_tutor = '${tutor.cd_tutor}'`
+      delete tutor.cd_tutor
+    }
+    
+    else{
+      return("DIGITE O CODIGO DO TUTOR")      
+    }
+    let sql =`UPDATE tb_tutor SET ` 
+    let valores = []
+    for(var key in tutor){
+      sql+= key + " = ?, "
+      valores.push(tutor[key])
+    }
+    sql = sql.slice(0,-2)
+    sql += pk
+    
+    
+   conexao.query(sql,valores)
+    return("Sucesso")
+  }
+  
+  catch(error){
+    mensagem = error
+  return(mensagem)
+  }
+}
+
+async function deleteTutor(tutor){
+  try{
+    if ("cd_tutor" in tutor && (tutor.cd_tutor)){
+      let sql = 'DELETE FROM tb_tutor WHERE cd_tutor = ? '
+      conexao.query(sql,[[tutor.cd_tutor]])
+      return("Deletado")
+    }
+
+    else{
+      return("DIGITE O CODIGO DO TUTOR")
+    }
+  }
+
+  catch(error){
+    mensagem = error
+    return(mensagem)
+  }
+
+}
+//////////////////FIM TUTOR
+
+//////////////////USUARIOS
 async function insertUser(usuarios){
   try{
     console.log(usuarios)
@@ -135,7 +264,10 @@ async function deleteUser(usuarios){
     mensagem = error
     return(mensagem)
   }
+
 }
+//////////////////FIM USUARIOS
+
 //////////////////PET
 
 // Função para registrar um pet
@@ -165,6 +297,29 @@ const viewUserPets = (req, res) => {
     }
     res.status(200).json(result)
   })
+}
+
+async function readAllPet(){
+  try{
+    
+    //coluans não possui: senha,pk e cpf
+    let sql = `SELECT * FROM tb_pet`
+     
+    const resposta = new Promise((resolve, reject)=>{
+     conexao.query(sql,(err,res)=>{
+      if(!err){
+        resultado = res
+        resolve(resultado)
+      }
+    })
+  })
+    return(await resposta)
+  }
+  
+  catch(error){
+    mensagem = error
+  return(mensagem)
+  }
 }
 
 //atualiz pets
@@ -232,7 +387,17 @@ export default {
           //crud pets
           registrarPet,
           viewUserPets,
+          readAllPet,
           updatePets,
-          deletePets
+          deletePets,
           //fim crud pets
+          
+          //crud tutor
+          insertTutor,
+          readTutor,
+          readAllTutor,
+          updateTutor,
+          deleteTutor
+
+          //fim tutor
              }

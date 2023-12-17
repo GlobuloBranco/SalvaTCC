@@ -2,6 +2,24 @@ import express from "express";
 import back from './backend.js'
 const rota = express.Router()
 
+//////////TUTOR
+rota.post("/tutor/cadastro", async(req,res)=>{
+    res.send({message: await back.insertTutor(req.body).catch((error) =>{return(error)})})})
+
+rota.post("/tutor/todos/encontrar", async(req,res)=>{
+    res.send({message: await back.readAllTutor(req.body).catch((error) =>{return(error)})})})
+
+rota.post("/tutor/encontrar", async(req,res)=>{
+    res.send({message: await back.readTutor(req.body).catch((error) =>{return(error)})})})
+
+rota.put("/tutor/atualiza", async(req,res)=>{
+    res.send({message: await back.updateTutor(req.body).catch((error) =>{return(error)})})})
+
+rota.delete("/tutor/delete", async(req,res)=>{
+    res.send({message: await back.deleteTutor(req.body).catch((error) =>{return(error)})})})
+//////////FIM TUTOR
+
+
 //////////PETS
 // Rota para registro do pet
 rota.post("/pet/registrar", back.registrarPet)
