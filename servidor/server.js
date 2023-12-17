@@ -10,6 +10,7 @@ try
 run.use(cors())
 
 // para poder ser usado usando axios e insomnia (axios é mto bom ^_^)
+run.use(express.json());
 run.use(bodyParser.urlencoded({ extended: false }));
 run.use(bodyParser.json());
 

@@ -26,6 +26,7 @@ async function insertUser(usuarios){
 
 async function readUser(usuarios){
   try{
+    console.log(usuarios);
     if(!"cd_user" in usuarios || (!usuarios.cd_user)){
       return("DIGITE O CODIOGO DO USUARIO")
     }
@@ -34,7 +35,7 @@ async function readUser(usuarios){
     conexao.query(sql,[[usuarios.cd_user]], (err,res,field)=>{
       if(!err){
         resultado =res[0]
-        console.log(resultado)
+        return(resultado)
       }
 
     })
@@ -121,6 +122,36 @@ async function deleteUser(usuarios){
 }
 
 
+// Função para registrar um pet
+const registrarPet = (req, res) => {
+
+  // Pega os valores do front
+  const {id_user, name_pet, gender, raca, porte, castrado, image} = req.body
+  const sql = "INSERT INTO TB_PET (ID_USER, NM_PET, SEXO, RACA, PORTE, CASTRADO, IMG_PET) VALUES ?"
+  const values = [[id_user, name_pet, gender, raca, porte, castrado, image]]
+  conexao.query(sql, [values], (err) => {
+    if (err) throw err;
+    res.status(200).json("Pet inserido")
+  })
+}
+
+// Função para visualizar todos os pets do usuário
+const viewUserPets = (req, res) => {
+
+  // Pega o id do usuário pel link /pet/petsUsuarios/1 por exemplo
+  const { id_user } = req.params
+  const sql = "SELECT * FROM TB_PET WHERE ID_USER = ?"
+  conexao.query(sql, id_user, (err, result) => {
+    if (err) throw err
+    if (result.length < 0) {
+      res.status(400).json({msg: "Nenhum pet registrado"})
+      return;
+    }
+    res.status(200).json(result)
+  })
+}
+
+
 export default {
           //crud usuario
           insertUser,
@@ -128,5 +159,7 @@ export default {
           readAllUser,
           updateUser,
           deleteUser,
+          registrarPet,
+          viewUserPets
           //crud 
              }

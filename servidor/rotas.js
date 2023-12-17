@@ -11,7 +11,13 @@ rota.post("/cadastro/usuario",async (req,res) =>{
 
 rota.post("/encontrar/usuario",async (req,res) =>{
     res.send(await back.readUser(req.body).catch((error)=>{return(`${error}`)}))
-}) 
+})
+
+// Rota para registro do pet
+rota.post("/pet/registrar", back.registrarPet)
+
+// O /:id_user é pego do front para buscar o id do usuário logado
+rota.get("/pet/petsUsuario/:id_user", back.viewUserPets)
 
 rota.get("/encontrar/todos/usuario",async (req,res) =>{
     res.send({message: await back.readAllUser(req.body).catch((error)=>{return(`${error}`)})})
